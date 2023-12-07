@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:google-drive="http://www.mulesoft.org/schema/mule/google-drive"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/google-drive http://www.mulesoft.org/schema/mule/google-drive/current/mule-google-drive.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="dc6fdb20-59b0-41b6-9f3b-5d60b22f936e" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<google-drive:config name="Google_Drive_Connector_Config" doc:name="Google Drive Connector Config" doc:id="3f3b9e4b-5de8-4063-ab4c-c83a514ad647" >
+		<google-drive:oauth2-connection >
+			<google-drive:oauth-authorization-code consumerKey="147377410522-0btqi9hfhrcp0qn27tg73ctsbhi1gfkt.apps.googleusercontent.com" consumerSecret="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" accessTokenUrl="https://oauth2.googleapis.com/token" resourceOwnerId="test"/>
+			<google-drive:oauth-callback-config listenerConfig="HTTP_Listener_config" callbackPath="/callback" authorizePath="/authorize" externalCallbackUrl="http://localhost:8081/callback" />
+		</google-drive:oauth2-connection>
+	</google-drive:config>
+	<flow name="google-drive-apiFlow" doc:id="452ae1fb-d6a3-4a1e-a65d-fcfb8a014263" >
+		<http:listener doc:name="Listener" doc:id="69486dff-80e4-4066-b872-349c2030b6a1" config-ref="HTTP_Listener_config" path="/googledrive"/>
+		<google-drive:get-files doc:name="getDriveFiles" doc:id="1c94e34d-6c90-4395-9b20-73cf4962badc" config-ref="Google_Drive_Connector_Config"/>
+		<ee:transform doc:name="listFilesResponse" doc:id="d8ce3be0-6862-41cd-b235-54b4e05752af" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
