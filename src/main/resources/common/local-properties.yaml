@@ -1,0 +1,12 @@
+http:
+  port: "8081"
+  host: "localhost"
+  path: "/getGDriveFiles"
+gDrive:
+  consumer:
+    key: "147377410522-0btqi9hfhrcp0qn27tg73cts.apps.googleusercontent.com"
+    secret: "GOCSPX-jjOC73Mb3D37v8Tgfh4JlITQag"
+  ownerId: "test"
+  callback: "/callback"
+  authPath: "/authorize"
+  externalCallback: "http://localhost:8081/callback"

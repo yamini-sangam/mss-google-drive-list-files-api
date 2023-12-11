@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:google-drive="http://www.mulesoft.org/schema/mule/google-drive"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/google-drive http://www.mulesoft.org/schema/mule/google-drive/current/mule-google-drive.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	
+	<flow name="google-drive-apiFlow" doc:id="452ae1fb-d6a3-4a1e-a65d-fcfb8a014263" >
+		<http:listener doc:name="main_http-listener" doc:id="69486dff-80e4-4066-b872-349c2030b6a1" config-ref="HTTP_Listener_config" path="${http.path}"/>
+		<logger level="INFO" doc:name="Start Log" doc:id="5834fdc2-f621-4801-8c9e-cc4e8b00cee7" message='#["Get Files from the Google Drive"]'/>
+		<google-drive:get-files doc:name="Get Drive Files List" doc:id="1c94e34d-6c90-4395-9b20-73cf4962badc" config-ref="Google_Drive_Connector_Config"/>
+		<ee:transform doc:name="List of Files Response" doc:id="d8ce3be0-6862-41cd-b235-54b4e05752af" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End Log" doc:id="4a730fde-a4cb-4fb1-b76d-8676b98abeaf" message='#["Got the Files successfully"]' />
+	
+</flow>
+</mule>
